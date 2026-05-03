@@ -1,0 +1,31 @@
+# Python
+__pycache__/
+*.py[cod]
+*.so
+*.egg
+*.egg-info/
+.dist-info/
+.env
+.env.*
+venv/
+ENV/
+env/
+.Python
+ipynb_checkpoints/
+
+# VSCode
+.vscode/
+
+# MNE and data
+*.fif
+*.fif.gz
+data/processed/
+
+# Logs
+logs/
+
+# Mac
+.DS_Store
+
+# Windows
+Thumbs.db

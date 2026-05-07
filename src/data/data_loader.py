@@ -18,8 +18,32 @@ class DataLoader:
         path = self.subject_eeg_bdf(subject)
         if not os.path.exists(path):
             raise FileNotFoundError(f'BDF file not found: {path}')
-        raw = mne.io.read_raw_bdf(path, preload=preload, verbose=False)
-        return raw
+        # Try reading with MNE BDF reader first
+        try:
+            raw = mne.io.read_raw_bdf(path, preload=preload, verbose=False)
+            return raw
+        except Exception as e:
+            print('read_raw_bdf failed:', e)
+
+        # Try using pyedflib to read BDF and convert to MNE RawArray
+        try:
+            import numpy as np
+            import pyedflib
+
+            with pyedflib.EdfReader(path) as f:
+                n_signals = f.signals_in_file
+                ch_names = f.getSignalLabels()
+                nsamples = f.getNSamples()[0]
+                sfreqs = f.getSampleFrequencies()
+                sfreq = float(sfreqs[0]) if len(sfreqs) > 0 else float(f.getSampleFrequencies(0))
+
+                data = np.vstack([f.readSignal(i) for i in range(n_signals)])
+
+            info = mne.create_info(ch_names=list(ch_names), sfreq=sfreq, ch_types=['eeg'] * len(ch_names))
+            raw = mne.io.RawArray(data, info)
+            return raw
+        except Exception as e_py:
+            raise RuntimeError(f'Could not read BDF file with pyedflib: {e_py}')
 
     def read_tsv(self, subject: str = 'sub-01', filename: str = 'channels.tsv') -> pd.DataFrame:
         path = os.path.join(self.root, subject, 'eeg', filename)

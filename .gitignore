@@ -1,31 +1,26 @@
 # Python
 __pycache__/
-*.py[cod]
-*.so
-*.egg
-*.egg-info/
-.dist-info/
-.env
-.env.*
-venv/
-ENV/
-env/
-.Python
-ipynb_checkpoints/
+*.pyc
 
-# VSCode
+# Virtual Environments
+.venv/
+env/
+
+# Logs and outputs
+logs/
+outputs/
+
+# Jupyter
+.ipynb_checkpoints/
+
+# VS Code
 .vscode/
 
-# MNE and data
-*.fif
-*.fif.gz
-data/processed/
+# Large neuroscience files
+*.bdf
+*.snirf
+*.edf
 
-# Logs
-logs/
-
-# Mac
+# OS files
 .DS_Store
-
-# Windows
 Thumbs.db
